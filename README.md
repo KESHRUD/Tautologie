@@ -9,7 +9,7 @@ Ce projet implémente un algorithme de vérification de tautologie en OCaml. Il 
 
 # Utilisation de OCaml en Terminal
 ```bash
-~/ocaml
+~$ocaml
 ```
 
 Cela lancera l'interpréteur(Toplevel) OCaml où vous pourrez saisir et évaluer des expressions OCaml.
