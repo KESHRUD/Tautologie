@@ -8,7 +8,9 @@ Ce projet implémente un algorithme de vérification de tautologie en OCaml. Il 
 	- Vérification du caractère de tautologie des formules conditionnelles.
 
 # Utilisation de OCaml en Terminal
-      ~/ocaml
+```bash
+~/ocaml
+```
 
 Cela lancera l'interpréteur(Toplevel) OCaml où vous pourrez saisir et évaluer des expressions OCaml.
 
