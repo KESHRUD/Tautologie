@@ -1,0 +1,527 @@
+
+\documentclass{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{graphicx} % Pour inclure des images
+\usepackage{pdfpages}
+\usepackage{rotating} % Pour les figures en mode paysage
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{minted}
+\usepackage{upquote}
+% Titre
+\title{Rapport de Projet de Programmation Fonctionnelle}
+\author{Ahmed Amine BENHAMMADA\\ Numéro d'étudiant : 12107981}
+\date{\today}
+\usepackage{fancyhdr}
+\usepackage{geometry} % Pour définir les marges de la page
+
+% Définition des marges de la page
+\geometry{
+    top=1in, % Marge supérieure
+    bottom=2in, % Marge inférieure
+    left=1in, % Marge gauche
+    right=1in, % Marge droite
+}
+
+% Définition du style de page avec fancyhdr
+\pagestyle{fancy}
+
+% Définition du contenu des en-têtes et des pieds de page
+\fancyhf{} % Efface tous les en-têtes et pieds de page précédemment définis
+\fancyhead{} % Efface tous les en-têtes
+\fancyfoot{} % Efface tous les pieds de page
+\fancyfoot[C]{Ahmed Amine BENHAMMADA - 12107981} % Contenu du pied de page centré
+\fancyhead[L]{\leftmark} % Contenu de l'en-tête à gauche
+
+% Ligne horizontale en bas de la page
+\renewcommand{\footrulewidth}{0.4pt} % Épaisseur de la ligne
+\renewcommand{\headrulewidth}{0.4pt} % Épaisseur de la ligne
+
+\begin{document}
+
+% Page de garde
+\begin{titlepage}
+    \centering
+    % Logo de l'université
+    \begin{minipage}[t]{0.45\textwidth}
+        \raggedright
+        \includegraphics[width=0.8\textwidth]{OCTOPUNKS/dossier_rapport/USPN.png}
+    \end{minipage}
+    \hfill
+    % Logo de l'institut
+    \begin{minipage}[t]{0.45\textwidth}
+        \raggedleft
+        \includegraphics[width=0.8\textwidth]{OCTOPUNKS/dossier_rapport/institut.jpg}
+    \end{minipage}\par\vspace{1cm}
+    
+    % Titre du rapport
+    {\Huge\bfseries Rapport de Projet de Programmation Fonctionnelle\par}
+    \vspace{0.8cm}
+    % Description du projet
+    {\LARGE Analyse de Tautologie dans les Formules Propositionnelles avec OCaml\par}
+    \vspace{1.2cm}
+    % Image du projet
+    \includegraphics[width=0.5\textwidth]{tautologie/taut.jpg}\par\vspace{1.2cm}
+    
+    % Informations supplémentaires
+    \begin{minipage}[t]{0.45\textwidth}
+        \raggedright
+        % Nom de l'encadrant
+        \textbf{Encadrant :} Christian Codognet\par
+        % Formation
+        \textbf{Formation :} L2 Informatique\par
+        % Auteur
+        \textbf{Étudiant :} Ahmed Amine BENHAMMADA\par
+        \textbf{Numéro d'étudiant :} 12107981\par
+        \vspace{0.7cm}
+    \end{minipage}
+    
+    % Date
+    {\Large \today\par}
+\end{titlepage}
+
+% Table des matières
+\tableofcontents % Génère la table des matières
+\newpage
+
+\begin{document}
+
+\section{Présentation du Problème de Tautologie}
+
+Le problème de tautologie consiste à déterminer si une formule propositionnelle est vraie pour toutes les distributions de valeurs de vérité possibles. En d'autres termes, il s'agit de vérifier si une formule est une tautologie, ce qui signifie qu'elle est toujours vraie, quelle que soit la valeur de vérité attribuée à ses variables.
+
+Dans ce problème, nous souhaitons développer un algorithme en OCaml pour vérifier si une formule propositionnelle donnée est une tautologie. Pour ce faire, nous utiliserons deux types de données différents : un type pour représenter les formules propositionnelles et un autre type pour les formules conditionnelles. Notre algorithme procèdera en trois étapes principales : la transformation de la formule propositionnelle en une forme équivalente utilisant des formules conditionnelles, la mise en forme normale de cette formule, et enfin, l'évaluation de la tautologie.
+
+\textbf{Exemple}
+Considérons la formule propositionnelle suivante :
+\[ (p \land q) \lor (\neg p \land q) \]
+
+Nous devons déterminer si cette formule est une tautologie. Pour ce faire, nous utiliserons notre algorithme en OCaml pour la transformer en une forme conditionnelle, puis nous la mettrons en forme normale et enfin nous évaluerons si elle est une tautologie.
+
+\subsection{Solution Algorithmique}
+
+Pour aborder et résoudre algorithmiquement le problème de vérification de tautologie pour des formules propositionnelles en utilisant les types \texttt{prop} et \texttt{cond} en OCaml, nous pouvons développer une solution en suivant les étapes de transformation, mise en forme normale, et évaluation. Voici une description plus détaillée de chacune de ces étapes avec des éléments algorithmiques :
+
+\subsubsection{Étape 1: Transformation de \texttt{prop} en \texttt{cond}}
+
+Dans cette étape, nous convertissons une formule du type \texttt{prop} à une formule du type \texttt{cond} en utilisant uniquement le connecteur \texttt{Si}. Cela implique de réinterpréter chaque connecteur logique (\texttt{Et}, \texttt{Ou}, \texttt{Imp}, \texttt{Equiv}, \texttt{Non}) en termes de \texttt{Si}.
+
+\begin{itemize}
+    \item \texttt{Non (p)} se traduit par \texttt{Si(p, Faux\_bis, Vrai\_bis)}.
+    \item \texttt{Et (p1, p2)} se traduit par \texttt{Si(p1, p2, Faux\_bis)}.
+    \item \texttt{Ou (p1, p2)} se traduit par \texttt{Si(p1, Vrai\_bis, p2)}.
+    \item \texttt{Imp (p1, p2)} se traduit par \texttt{Si(p1, p2, Vrai\_bis)}.
+    \item \texttt{Equiv (p1, p2)} se traduit par \texttt{Si(p1, p2, Si(p2, Faux\_bis, Vrai\_bis))}.
+\end{itemize}
+
+Ces transformations permettent de n'utiliser que des expressions conditionnelles pour représenter toute logique propositionnelle.
+
+\subsubsection{Étape 2: Mise en Forme Normale}
+
+L'objectif est de s'assurer que le premier argument du connecteur \texttt{Si} est toujours une variable ou une constante, jamais un autre \texttt{Si}. Pour cela, nous appliquons une transformation récursive pour remanier les imbrications de \texttt{Si} :
+
+\[
+\texttt{Si(Si(a, b, c), d, e)} \rightarrow \texttt{Si(a, Si(b, d, e), Si(c, d, e))}
+\]
+
+Cela garantit que les évaluations successives n'ont pas à gérer un \texttt{Si} en premier argument, simplifiant ainsi l'évaluation logique.
+
+\subsubsection{Étape 3: Évaluation de Tautologie}
+
+Pour vérifier si une formule est une tautologie, nous devons évaluer la formule dans tous les contextes possibles de vérité des variables utilisées. L'évaluation utilise un environnement qui associe chaque variable à une valeur de vérité :
+
+\begin{itemize}
+    \item L'évaluation de \texttt{Vrai\_bis} retourne \texttt{true}.
+    \item L'évaluation de \texttt{Faux\_bis} retourne \texttt{false}.
+    \item L'évaluation de \texttt{W(i)} retourne la valeur associée dans l'environnement; si elle n'est pas présente, elle retourne \texttt{false} par défaut.
+    \item L'évaluation de \texttt{Si(g, h, k)} évalue d'abord \texttt{g}. Si \texttt{g} est vrai, alors \texttt{h} est évalué; sinon, \texttt{k} est évalué.
+\end{itemize}
+
+Pour vérifier si la formule transformée et normalisée est une tautologie, nous testons toutes les combinaisons de valeurs de vérité pour les variables et vérifions si le résultat est toujours vrai. Cela peut être réalisé par un balayage exhaustif des valeurs possibles des variables.
+
+\section{Implémentation}
+
+Pour implémenter l'algorithme de vérification de tautologie en OCaml, nous utilisons deux types de données pour représenter les formules propositionnelles et les conditions, ainsi que des fonctions pour effectuer la transformation, la mise en forme normale et l'évaluation.
+
+\subsection{Types}
+
+Nous définissons deux types de données :
+
+\begin{itemize}
+    \item \texttt{prop} : Ce type représente les formules propositionnelles. Il peut être une variable (\texttt{V}), vrai (\texttt{Vrai}), faux (\texttt{Faux}), ou une combinaison de formules avec des connecteurs logiques (\texttt{Et}, \texttt{Ou}, \texttt{Imp}, \texttt{Equiv}, \texttt{Non}).
+    \begin{minted}[bgcolor=white,frame=lines]{ocaml}
+(* Définition des types pour les formules propositionnelles et conditionnelles *)
+type prop =
+  | V of int             (* Représente une variable avec un identifiant *)
+  | Vrai                 (* Représente la constante vrai *)
+  | Faux                 (* Représente la constante faux *)
+  | Et of prop * prop    (* Représente la conjonction de deux propositions *)
+  | Ou of prop * prop    (* Représente la disjonction de deux propositions *)
+  | Imp of prop * prop   (* Représente l'implication entre deux propositions *)
+  | Equiv of prop * prop (* Représente l'équivalence entre deux propositions *)
+  | Non of prop          (* Représente la négation d'une proposition *)
+    \end{minted}
+    
+    \item \texttt{cond} : Ce type représente les conditions utilisées pour évaluer les formules. Il peut être une variable (\texttt{W}), vrai (\texttt{Vrai\_bis}), faux (\texttt{Faux\_bis}), ou une combinaison conditionnelle (\texttt{Si}) utilisant le connecteur \texttt{Si}.
+    \begin{minted}[bgcolor=white,frame=lines]{ocaml}
+type cond =
+  (* Représente une variable dans le contexte des conditions *)
+  | W of int   
+  (* Représente la constante vrai dans le contexte des conditions *)          
+  | Vrai_bis    
+  (* Représente la constante faux dans le contexte des conditions *)         
+  | Faux_bis        
+  (* Représente une conditionnelle avec une condition et deux branches *)     
+  | Si of cond * cond * cond 
+    \end{minted}
+\end{itemize}
+
+
+
+\subsection{Algorithme}
+
+Voici l'algorithme complet avec des commentaires détaillés expliquant chaque partie du code :
+
+\subsubsection{Transformation de \texttt{prop} en \texttt{cond}}
+
+\begin{minted}[bgcolor=white,frame=lines]{ocaml}
+(* 1/Fonction de transformation *) 
+(* Convertit une formule propositionnelle en une formule conditionnelle *)
+let rec trad_prop_to_cond = function
+  (* Convertit une variable prop en variable cond *)
+  | V(i) -> W(i) 
+  (* Convertit la constante vrai prop en constante vrai cond *)               
+  | Vrai -> Vrai_bis 
+  (* Convertit la constante faux prop en constante faux cond *)   
+  | Faux -> Faux_bis 
+  (* Convertit la négation d'une proposition prop en conditionnelle *)  
+  | Non(p) -> Si(trad_prop_to_cond p, Faux_bis, Vrai_bis) 
+  (* Convertit la conjonction de deux propositions prop en conditionnelle *)              
+  | Et(p1, p2) -> Si(trad_prop_to_cond p1, trad_prop_to_cond p2, Faux_bis) 
+  (* Convertit la disjonction de deux propositions prop en conditionnelle *)                  
+  | Ou(p1, p2) -> Si(trad_prop_to_cond p1, Vrai_bis, trad_prop_to_cond p2)
+  (* Convertit l'implication entre deux propositions prop en conditionnelle *)                  
+  | Imp(p1, p2) -> Si(trad_prop_to_cond (Non p1), trad_prop_to_cond p2, Vrai_bis)
+  (* Convertit l'équivalence entre deux propositions prop en conditionnelle *)                   
+  | Equiv(p1, p2) -> Si(Si(trad_prop_to_cond p1, trad_prop_to_cond p2, Vrai_bis)
+                     , Si(trad_prop_to_cond p2, trad_prop_to_cond p1, Vrai_bis), Vrai_bis)
+
+\end{minted}
+
+\subsubsection{Mise en forme normale}
+
+\begin{minted}[bgcolor=white,frame=lines]{ocaml}
+(* 2/Mettre une formule conditionnelle en forme normale *)
+let rec form_norm_cond = function
+  (* Si la formule est de la forme Si(Si(...), ...), on la décompose *)
+  | Si(Si(a, b, c), d, e) -> 
+      (* Forme normale des parties conditionnelles *)
+      let nb = form_norm_cond (Si(b, d, e)) in  
+      let nc = form_norm_cond (Si(c, d, e)) in
+      (* Forme normale de la formule principale *)
+      form_norm_cond (Si(form_norm_cond a, nb, nc))  
+  (* Si la formule est de la forme Si(...), forme normale de ses parties *)      
+  | Si(a, b, c) -> Si(a, form_norm_cond b, form_norm_cond c) 
+  (* Pour les autres cas, la formule est déjà en forme normale *)                   
+  | other -> other             
+\end{minted}
+
+\subsubsection{Évaluation dans un environnement}
+
+\begin{minted}[bgcolor=white,frame=lines]{ocaml}
+(* 3/Évalue une formule conditionnelle dans un environnement donné *)
+let rec eval_cond f env =
+  match f with
+  (* Si la formule est vraie, retourne vrai *)
+  | Vrai_bis -> true        
+  (* Si la formule est fausse, retourne faux *)  
+  | Faux_bis -> false 
+  (* Si la formule est une variable, recherche sa valeur dans l'environnement *)  
+  | W(i) -> List.assoc_opt i env |> Option.value ~default:false  
+  (* Si la formule est de la forme Si(...), évalue les parties conditionnelles *)            
+  | Si(g, h, k) ->          
+      (* Si la première partie est vraie, évalue la deuxième partie (branche alors *)
+      if eval_cond g env then eval_cond h env  
+      (* Sinon, évalue la troisième partie (branche sinon) *)
+      else eval_cond k env             
+\end{minted}
+
+\subsubsection{Vérification de tautologie}
+
+\begin{minted}[bgcolor=white,frame=lines]{ocaml}
+(* 4/Fonctions de vérification du caractère de tautologie *) 
+(* Vérifie si une formule conditionnelle est une tautologie *)
+let rec is_tautology_cond f =
+  let rec try_all_assignments vars env =
+    match vars with
+    | [] -> eval_cond f env
+    (* Sinon, pour chaque variable, essaie les deux valeurs possibles (vrai et faux) *)          
+    | v::vs ->                  
+        try_all_assignments vs ((v, true)::env) && try_all_assignments vs ((v, false)::env)
+  in
+  let rec collect_vars f acc =
+    match f with
+    (* Si la formule est une variable, ajoute son identifiant à la liste des variables *)
+    | W(i) -> if List.mem i acc then acc else i::acc    
+    (* Si la formule est de la forme Si(...), collecte les variables de ses parties *)                                          
+    | Si(g, h, k) -> collect_vars g (collect_vars h (collect_vars k acc)) 
+    (* Pour les autres cas, aucune variable à collecter *)                   
+    | _ -> acc    
+  in
+  (* Collecte toutes les variables de la formule *)
+  let vars = collect_vars f [] in    
+  (* Essaie toutes les affectations possibles *)
+  try_all_assignments vars []        
+\end{minted}
+\textbf{ Fonction principale pour le Toplevel : }
+\begin{minted}[bgcolor=white,frame=lines]{ocaml}
+(* Fonction principale qui Vérifie si une formule propositionnelle est une tautologie *)
+let is_tautology f =
+  (* Convertit la formule propositionnelle en formule conditionnelle *)
+  let g = trad_prop_to_cond f in  
+  (* Met la formule conditionnelle en forme normale *)
+  let h = form_norm_cond g in        
+  (* Vérifie si la formule conditionnelle est une tautologie *)
+  let is_tautology = is_tautology_cond h in  
+  let message = if is_tautology then "La formule est une tautologie." 
+                else "La formule n'est pas une tautologie." in
+  (* Affiche le message indiquant si la formule est une tautologie *)
+  print_endline message; 
+  (* Retourne la valeur booléenne (caractère de tautologie) 
+     indiquant si la formule est une tautologie *)
+  is_tautology    
+
+\end{minted}
+
+Cet algorithme utilise les types \texttt{prop} et \texttt{cond} pour représenter les formules propositionnelles et les conditions, respectivement. Il effectue une transformation de la formule propositionnelle en une forme conditionnelle, puis la met en forme normale avant de l'évaluer pour déterminer si elle est une tautologie à l'aide de la fonction \textit{is\_tautologie}.
+
+
+
+\section{Tests et Jeux d'Essais}
+Pour vérifier la tautologie d'une \textit{prop} j'ai établit une fonction \texttt{is\_tautology} qui sert comme une fonction principale de test de tautologie , elle prend une prop à l'entrée qui est déjà transformée en \textit{cond} , mise en forme normale et évaluée , et renvoie le caractère de tautologie ; un boolean qui détermine si la formule est une tautologie ou pas.
+Ci-dessous quelques essais :
+
+\begin{minted}[bgcolor=white,frame=lines]{ocaml}
+keshrud@keshrud:~$ ocaml
+        OCaml version 4.13.1
+
+# #use "tautologie.ml";;
+type prop =
+    V of int
+  | Vrai
+  | Faux
+  | Et of prop * prop
+  | Ou of prop * prop
+  | Imp of prop * prop
+  | Equiv of prop * prop
+  | Non of prop
+type cond = W of int | Vrai_bis | Faux_bis | Si of cond * cond * cond
+val trad_prop_to_cond : prop -> cond = <fun>
+val form_norm_cond : cond -> cond = <fun>
+val eval_cond : cond -> (int * bool) list -> bool = <fun>
+val is_tautology_cond : cond -> bool = <fun>
+val is_tautology : prop -> bool = <fun>
+
+# is_tautology Vrai;;      
+La formule est une tautologie.
+- : bool = true
+
+# is_tautology (Non(V(1)));;
+La formule n'est pas une tautologie.
+- : bool = false
+
+# is_tautology (Et(Vrai, Ou(Non(V(1)), V(2))));;
+La formule n'est pas une tautologie.
+- : bool = false
+
+# is_tautology (Non(Et(Vrai, Non(Et(V(1), V(2))))));;
+La formule n'est pas une tautologie.
+- : bool = false
+
+# is_tautology (Imp(Et(Vrai, Ou(V(1), Non(V(2)))), Ou(Non(V(1)), V(2))));;
+La formule est une tautologie.
+- : bool = true
+
+# is_tautology (Equiv(Et(Vrai, Non(Vrai)), Non(Vrai)));;
+La formule est une tautologie : true
+- : bool = true
+
+# is_tautology (Equiv(Non(Et(V(1), Ou(V(2), Non(V(3))))), 
+                 Ou(Et(Non(V(1)), Non(V(2))), V(3))));;
+La formule n'est pas une tautologie.
+- : bool = false
+
+# is_tautology (Imp(Et(Vrai, Ou(V(1), Non(V(2)))), Ou(Non(V(1)), V(2))));;
+La formule est une tautologie.
+- : bool = true
+
+# is_tautology (Equiv(Et(V(1), Non(V(2))), Ou(Non(V(1)), V(2))));;
+La formule n'est pas une tautologie.
+- : bool = false
+
+# is_tautology (Equiv(Et(V(1), Non(V(2))), Ou(Non(V(1)), Non(V(2)))));;
+La formule n'est pas une tautologie.
+- : bool = false
+
+# is_tautology (Imp(Et(Vrai, Ou(V(1), Non(V(2)))), Ou(Non(V(1)), V(2))));;
+La formule est une tautologie.
+- : bool = true
+
+# is_tautology (Equiv(Et(Et(V(1), Ou(V(2), Non(V(3)))), Non(Et(V(4), V(5)))), 
+                 Ou(Non(V(1)), Et(V(3), Non(V(4))))));;
+La formule n'est pas une tautologie.
+- : bool = false
+
+\end{minted}
+
+\section{Problèmes rencontrés et leurs solutions}
+
+Lors de l'implémentation de l'algorithme de vérification de tautologie en OCaml, plusieurs difficultés ont été rencontrées. Dans cette section, nous discutons des principaux problèmes rencontrés et des solutions adoptées pour les résoudre.
+
+\subsection{Utilisation des environnements OCaml}
+
+L'un des défis initiaux a été de comprendre et d'utiliser efficacement la notion d'environnement OCaml pour stocker les valeurs des variables propositionnelles. Cela impliquait de consulter plusieurs documentations OCaml pour comprendre les structures de données et les fonctions disponibles.
+
+Pour résoudre ce problème, une approche progressive a été adoptée. En comprenant d'abord les types de données disponibles en OCaml, nous avons ensuite étudié les fonctionnalités des listes, qui ont été utilisées pour représenter les environnements. Voici un extrait du code illustrant l'utilisation des listes pour stocker les valeurs des variables :
+
+\begin{minted}[bgcolor=white,frame=lines,linenos]{ocaml}
+(* Utilisation d'une liste pour stocker les valeurs des variables dans un environnement *)
+let rec eval_cond f env =
+  match f with
+  | W(i) -> List.assoc_opt i env |> Option.value ~default:false  
+  ...
+\end{minted}
+
+\subsection{Fonction OCaml try\_all\_assignments}
+
+Une autre difficulté était l'implémentation de la fonction \texttt{try\_all\_assignments}, qui teste toutes les affectations possibles des valeurs de vérité aux variables propositionnelles. Cette fonction était essentielle pour vérifier si une formule conditionnelle est une tautologie.
+
+Après avoir consulté la documentation OCaml et étudié des exemples similaires, nous avons pu écrire la fonction \texttt{try\_all\_assignments} de manière efficace. Voici un exemple du code correspondant :
+
+\begin{minted}[bgcolor=white,frame=lines,linenos]{ocaml}
+(* Fonction récursive pour tester toutes les affectations possibles *)
+let rec try_all_assignments vars env =
+  match vars with
+  | [] -> eval_cond f env
+  | v::vs ->                  
+      try_all_assignments vs ((v, true)::env) && try_all_assignments vs ((v, false)::env)
+\end{minted}
+
+\section{** CODE **}
+\begin{minted}[bgcolor=white,frame=lines]{ocaml}
+(* Définition des types pour les formules propositionnelles et conditionnelles *)
+type prop =
+  | V of int              (* Variable propositionnelle avec un identifiant *)
+  | Vrai                  (* Constante "Vrai" *)
+  | Faux                  (* Constante "Faux" *)
+  | Et of prop * prop     (* Opérateur "Et" *)
+  | Ou of prop * prop     (* Opérateur "Ou" *)
+  | Imp of prop * prop    (* Opérateur "Implication" *)
+  | Equiv of prop * prop  (* Opérateur "Équivalence" *)
+  | Non of prop           (* Opérateur "Non" *)
+
+type cond =
+  | W of int              (* Variable conditionnelle avec un identifiant *)
+  | Vrai_bis              (* Constante "Vrai_bis" *)
+  | Faux_bis              (* Constante "Faux_bis" *)
+  | Si of cond * cond * cond (* Opérateur conditionnel "Si" *)
+
+(* 1/Fonction de transformation *) 
+(* Convertit une formule propositionnelle en une formule conditionnelle *)
+let rec trad_prop_to_cond = function
+  (* Convertit une variable prop en variable cond *)
+  | V(i) -> W(i) 
+  (* Convertit la constante vrai prop en constante vrai cond *)               
+  | Vrai -> Vrai_bis 
+  (* Convertit la constante faux prop en constante faux cond *)   
+  | Faux -> Faux_bis 
+  (* Convertit la négation d'une proposition prop en conditionnelle *)  
+  | Non(p) -> Si(trad_prop_to_cond p, Faux_bis, Vrai_bis) 
+  (* Convertit la conjonction de deux propositions prop en conditionnelle *)              
+  | Et(p1, p2) -> Si(trad_prop_to_cond p1, trad_prop_to_cond p2, Faux_bis) 
+  (* Convertit la disjonction de deux propositions prop en conditionnelle *)                  
+  | Ou(p1, p2) -> Si(trad_prop_to_cond p1, Vrai_bis, trad_prop_to_cond p2)
+  (* Convertit l'implication entre deux propositions prop en conditionnelle *)                  
+  | Imp(p1, p2) -> Si(trad_prop_to_cond (Non p1), trad_prop_to_cond p2, Vrai_bis)
+  (* Convertit l'équivalence entre deux propositions prop en conditionnelle *)                   
+  | Equiv(p1, p2) -> Si(Si(trad_prop_to_cond p1, trad_prop_to_cond p2, Vrai_bis), Si(trad_prop_to_cond p2, trad_prop_to_cond p1, Vrai_bis), Vrai_bis)
+
+(* 2/Met une formule conditionnelle en forme normale *)
+let rec form_norm_cond = function
+  (* Si la formule est de la forme Si(Si(...), ...), on la décompose *)
+  | Si(Si(a, b, c), d, e) -> 
+      (* Forme normale des parties conditionnelles *)
+      let nb = form_norm_cond (Si(b, d, e)) in  
+      let nc = form_norm_cond (Si(c, d, e)) in
+      (* Forme normale de la formule principale *)
+      form_norm_cond (Si(form_norm_cond a, nb, nc))  
+  (* Si la formule est de la forme Si(...), forme normale de ses parties *)      
+  | Si(a, b, c) -> Si(a, form_norm_cond b, form_norm_cond c) 
+  (* Pour les autres cas, la formule est déjà en forme normale *)                   
+  | other -> other  
+
+(* 3/Évalue une formule conditionnelle dans un environnement donné *)
+let rec eval_cond f env =
+  match f with
+  (* Si la formule est vraie, retourne vrai *)
+  | Vrai_bis -> true        
+  (* Si la formule est fausse, retourne faux *)  
+  | Faux_bis -> false 
+  (* Si la formule est une variable, recherche sa valeur dans l'environnement *)  
+  | W(i) -> List.assoc_opt i env |> Option.value ~default:false  
+  (* Si la formule est de la forme Si(...), évalue les parties conditionnelles *)            
+  | Si(g, h, k) ->          
+      (* Si la première partie est vraie, évalue la deuxième partie *)
+      if eval_cond g env then eval_cond h env  
+      (* Sinon, évalue la troisième partie *)
+      else eval_cond k env   
+                             
+(* 4/Fonctions de vérification du caractère de tautologie *) 
+(* Vérifie si une formule conditionnelle est une tautologie *)
+let rec is_tautology_cond f =
+  let rec try_all_assignments vars env =
+    match vars with
+    | [] -> eval_cond f env
+    (* Sinon, pour chaque variable, essaie les deux valeurs possibles (vrai et faux) *)          
+    | v::vs ->                  
+        try_all_assignments vs ((v, true)::env) && try_all_assignments vs ((v, false)::env)
+  in
+  let rec collect_vars f acc =
+    match f with
+    (* Si la formule est une variable, ajoute son identifiant à la liste des variables *)
+    | W(i) -> if List.mem i acc then acc else i::acc    
+    (* Si la formule est de la forme Si(...), collecte les variables de ses parties *)                                          
+    | Si(g, h, k) -> collect_vars g (collect_vars h (collect_vars k acc)) 
+    (* Pour les autres cas, aucune variable à collecter *)                   
+    | _ -> acc    
+  in
+  (* Collecte toutes les variables de la formule *)
+  let vars = collect_vars f [] in    
+  (* Essaie toutes les affectations possibles *)
+  try_all_assignments vars []        
+
+(* Fonction principale qui Vérifie si une formule propositionnelle est une tautologie *)
+let is_tautology f =
+  (* Convertit la formule propositionnelle en formule conditionnelle *)
+  let g = trad_prop_to_cond f in  
+  (* Met la formule conditionnelle en forme normale *)
+  let h = form_norm_cond g in        
+  (* Vérifie si la formule conditionnelle est une tautologie *)
+  let is_tautology = is_tautology_cond h in  
+  let message = if is_tautology then "La formule est une tautologie." 
+                else "La formule n'est pas une tautologie." in
+  (* Affiche le message indiquant si la formule est une tautologie *)
+  print_endline message; 
+  (* Retourne la valeur booléenne (caractère de tautologie) 
+      indiquant si la formule est une tautologie *)
+  is_tautology    
+
+\end{minted}
+
+\end{document}
+
+
