@@ -1,11 +1,11 @@
 # Tautologie en OCaml
 Ce projet implémente un algorithme de vérification de tautologie en OCaml. Il prend en entrée une formule propositionnelle et détermine si elle est une tautologie ou non.
 
-# Fonctionnalités
-*Conversion de formules propositionnelles en formules conditionnelles.
-*Mise en forme normale des formules conditionnelles.
-*Évaluation des formules conditionnelles dans un environnement donné.
-*Vérification du caractère de tautologie des formules conditionnelles.
+# Étapes
+	- Conversion de formules propositionnelles en formules conditionnelles.
+	- Mise en forme normale des formules conditionnelles.
+	- Évaluation des formules conditionnelles dans un environnement donné.
+	- Vérification du caractère de tautologie des formules conditionnelles.
 
 ## Utilisation de OCaml en Terminal
 
