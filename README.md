@@ -10,7 +10,7 @@ Ce projet implémente un algorithme de vérification de tautologie en OCaml. Il 
 ## Utilisation de OCaml en Terminal
 
 Pour ouvrir OCaml dans votre terminal, il vous suffit de taper la commande suivante :
-~/ocaml
+	~/ocaml
 
 Cela lancera l'interpréteur(Toplevel) OCaml où vous pourrez saisir et évaluer des expressions OCaml.
 
