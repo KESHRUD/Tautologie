@@ -13,16 +13,19 @@ Pour ouvrir OCaml dans votre terminal, il vous suffit de taper la commande suiva
 
 ```bash
 ocaml
+```
 
 Cela lancera l'interpréteur(Toplevel) OCaml où vous pourrez saisir et évaluer des expressions OCaml.
 
 ## Importation du Fichier `tautologie.ml`
 ```bash
 # #use "tautologie.ml";;
+```
 
 ## Exemple d'utilisation
 ```bash
 # is_tautology (Et(Vrai, Ou(Non(V(1)), V(2))));;
+```
 
 
 
