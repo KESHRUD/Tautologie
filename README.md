@@ -7,22 +7,28 @@ Ce projet implémente un algorithme de vérification de tautologie en OCaml. Il 
 	- Évaluation des formules conditionnelles dans un environnement donné.
 	- Vérification du caractère de tautologie des formules conditionnelles.
 
-## Utilisation de OCaml en Terminal
-
-Pour ouvrir OCaml dans votre terminal, il vous suffit de taper la commande suivante :
-	~/ocaml
+# Utilisation de OCaml en Terminal
+      ~/ocaml
 
 Cela lancera l'interpréteur(Toplevel) OCaml où vous pourrez saisir et évaluer des expressions OCaml.
 
-## Importation du Fichier `tautologie.ml`
+# Importation du Fichier `tautologie.ml`
 ```bash
 # #use "tautologie.ml";;
 ```
 
-## Exemple d'utilisation
+# Exemple d'utilisation
 ```bash
 # is_tautology (Et(Vrai, Ou(Non(V(1)), V(2))));;
 ```
+ceci donnera :
+```bash
+La formule n'est pas une tautologie.
+- : bool = false
+```
+
+# Auteur
+Ce projet a été développé par Ahmed Amine BENHAMMADA dans le cadre du cours Programmation Fonctionnelle à l'Écoole d'ingénieurs Sup Galilée , Université Sorbonne Paris Nord.
 
 
 
